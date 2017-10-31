@@ -2,12 +2,19 @@ const minimist = require('minimist');
 const fs = require('fs');
 const through2= require('through2');
 const split= require('split');
+const request = require('request');
 
 var ACTIONS = {
     IO: 'io',
     TRANSFORM: 'transform',
-    TRANSFORM_FILE: 'transform-file'
+    TRANSFORM_FILE: 'transform-file', 
+    BUNDLE_CSS:'bundle-css'
 };
+
+var ERRORS = {
+    FILE_NOT_EXISTS: 'you need to set file',
+    PATH_NOT_EXISTS: 'you need to set path'
+}
 
 function inputOutput(filePath) {
     const stream = fs.createReadStream(filePath);
@@ -45,55 +52,78 @@ function transform() {
     
 }
 
-function httpClient() {
+function cssBundler(path){
+    var remotePath = 'https://www.epam.com/etc/clientlibs/foundation/main.min.fc69c13add6eae57cd247a91c7e26a15.css';
+    var output=fs.createWriteStream('bundle.css');
+    fs.readdir(path, function(err, files){
+        if(err){
+            throw err;
+        }
 
-} 
-
-function httpServer() {
-
-} 
+        files
+            .filter(function(file){return file.endsWith('.css')})
+            .forEach(function(file){
+                var stream = fs.createReadStream(path + file).pipe(output, {end: false});
+            });
+    });
+    request.get(remotePath).pipe(output);
+}
 
 function printHelpMessage() {
     console.log('bla bla bla');
 } 
 
-function checkFileParam(file, func){
-    if(file){
-        func(file);
+function checkParam(param, func, err){
+    if(param){
+        func(param);
     }else{
-        console.log('you need to set file');
+        console.log(err);
     }
 }
 
-var alias =  {
+const alias =  {
     h: 'help',
     a: 'action',
-    f: 'file'
+    f: 'file',
+    p: 'path'
 };
-var string = ['action', 'file'];
-var args=minimist(process.argv, {
-    string,
-    alias
-});
+const string = ['action', 'file'];
 
-if(args.help && (process.argv[2] === '-h' || process.argv[2] === '--help')){
-    printHelpMessage();
-}else if(args.action){
-    switch(args.action){
-        case ACTIONS.IO:
-            checkFileParam(args.file, inputOutput);
-        break;
-        case ACTIONS.TRANSFORM:
-            transform();
-        break;
-        case ACTIONS.TRANSFORM_FILE:
-            checkFileParam(args.file, transformFile);
-        break;
-        default:
-            console.log(`available actions: ${ACTIONS.IO}, ${ACTIONS.TRANSFORM}, ${ACTIONS.TRANSFORM_FILE}`);
+function streams(){
+    console.log(process.argv);
+    var args=minimist(process.argv, {
+        string,
+        alias
+    });
+
+    if(args.help && (process.argv[2] === '-h' || process.argv[2] === '--help')){
+        printHelpMessage();
+    }else if(args.action){
+        switch(args.action){
+            case ACTIONS.IO:
+                checkFileParam(args.file, inputOutput, ERRORS.FILE_NOT_EXISTS);
             break;
+            case ACTIONS.TRANSFORM:
+                transform();
+            break;
+            case ACTIONS.TRANSFORM_FILE:
+                checkFileParam(args.file, inputOutput, ERRORS.FILE_NOT_EXISTS);
+            break;
+            case ACTIONS.BUNDLE_CSS:
+                checkParam(args.path, cssBundler, ERRORS.PATH_NOT_EXISTS);
+                break;
+            default:
+                console.log(`available actions: ${ACTIONS.IO}, ${ACTIONS.TRANSFORM}, ${ACTIONS.TRANSFORM_FILE}`);
+                break;
+        }
+    }else{
+        console.log('you need to set action');
+        printHelpMessage();
     }
+}
+
+if (!module.parent){
+    streams();
 }else{
-    console.log('you need to set action');
-    printHelpMessage();
+    module.exports = streams;
 }
