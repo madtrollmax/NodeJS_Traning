@@ -4,3 +4,5 @@ npm run start --  --action=bundle-css --path=./utils/css/
 
 проверка echo 
 curl -d "dasdgafdas" http://localhost
+
+https://app.swaggerhub.com/apis/madtrollmax/NodeTraning/1.0.0

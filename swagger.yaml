@@ -1,0 +1,154 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a simple API"
+  version: "1.0.0"
+  title: "Node traning"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:8080"
+basePath: "/"
+tags:
+- name: "cities"
+  description: "Work with cities"
+- name: "users"
+  description: "Work with users"
+- name: "productions"
+  description: "Work with productions"
+schemes:
+- "http"
+paths:
+  /api/cities:
+    get:
+      tags:
+      - "cities"
+      summary: "Get All cities"
+      operationId: "GetAllCities"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/cityItem"
+    post:
+      tags:
+      - "cities"
+      summary: "adds an city"
+      description: "Adds new city"
+      operationId: "AddCity"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "cityItem"
+        description: "city to add"
+        required: false
+        schema:
+          $ref: "#/definitions/cityItem"
+      responses:
+        201:
+          description: "item created"
+          schema:
+            $ref: "#/definitions/cityItem"
+  /api/cities/{id}:
+    get:
+      tags:
+      - "cities"
+      summary: "Get an city"
+      operationId: "GetCity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            $ref: "#/definitions/cityItem"
+    put:
+      tags:
+      - "cities"
+      summary: "change an city"
+      operationId: "changeCity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "cityItem"
+        description: "city to add"
+        required: false
+        schema:
+          $ref: "#/definitions/cityItem"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            $ref: "#/definitions/cityItem"
+    delete:
+      tags:
+      - "cities"
+      summary: "delete an city"
+      operationId: "deleteCity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "search results matching criteria"
+definitions:
+  cityItem:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      _id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name:
+        type: "string"
+      country:
+        type: "string"
+      capital:
+        type: "boolean"
+      location:
+        $ref: "#/definitions/location"
+      lastModifiedDate:
+        type: "string"
+        format: "date"
+    example:
+      country: "country"
+      capital: true
+      lastModifiedDate: "2000-01-23"
+      name: "name"
+      location:
+        lat: 0
+        long: 6
+      _id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+  location:
+    properties:
+      lat:
+        type: "integer"
+      long:
+        type: "integer"
+    example:
+      lat: 0
+      long: 6

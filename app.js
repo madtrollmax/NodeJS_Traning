@@ -2,10 +2,16 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {MongoClient} from 'mongodb'
 
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 import models from './models'
 
 const app = express();
 const jsonParse=bodyParser.json({type:'*/*'});
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', function (req, res) {
     // MongoClient.connect('mongodb://localhost:27017', function(err, client) {
