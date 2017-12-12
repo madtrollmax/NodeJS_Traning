@@ -25,6 +25,8 @@
     "nodemon": "^1.12.1"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "minimist": "^1.2.0",
     "request": "^2.83.0",
     "split": "^1.0.1",

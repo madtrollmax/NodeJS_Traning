@@ -1,17 +1,6 @@
-import config from "./config";
-import models from "./models"
-import {EventEmitter} from 'events';
-import streams from './utils/streams';
+import app from'./app';
+const port = process.env.PORT || 8080;
 
-console.log(config.name);
-new models.User();
-new models.Product();
-
-const emitter = new EventEmitter();
-
-const watcher = new models.DirWatcher(emitter);
-watcher.watch(config.data_dir, 10000);
-
-new models.Importer(emitter);
-
-streams();
+app.listen(port, () =>
+    console.log(`App listening on port ${port}!`
+))
