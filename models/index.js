@@ -1,6 +1,5 @@
-import User from './user';
-import Product from './product';
-import DirWatcher from './dirwatcher';
-import Importer from './importer';
+import Users from './user';
+import Products from './product';
 
-export default {User, Product, DirWatcher, Importer};
+
+export default {Users, Products};

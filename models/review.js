@@ -1,10 +1,10 @@
 import Sequelize from 'sequelize';
 import db from '../database/db';
 
-const user = db.define('User', {
+const review = db.define('Review', {
     Id: {type: Sequelize.BIGINT, primaryKey: true, autoIncrement: true},
-    Name: {type: Sequelize.STRING},
-    Password: {type: Sequelize.STRING}
+    ProductionId: {type: Sequelize.BIGINT},
+    Review: {type: Sequelize.STRING},
 });
 
-export default user;
+export default review;
